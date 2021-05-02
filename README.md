@@ -1,5 +1,4 @@
 # software_engineering
-class software_engineering
 set_buyer_payed_amount(o_ono)这类函数是不是缺参数？
 登录管理员实现？
 数据库登录函数，异常处理能力？
