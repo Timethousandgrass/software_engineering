@@ -8,6 +8,7 @@ app = Flask(__name__)
 PATH = 'I:/bike_data/data/'
 IP = '118.202.40.213'
 
+
 # 需要初始化管理员
 
 
@@ -21,7 +22,6 @@ def get_local_resource(name):  # file_name
     file_path = os.path.join(basedir, 'data', name)
     print(file_path)
     return send_file(os.path.join(PATH, name))
-
 
 
 @app.route('/update/', methods=['POST'])
@@ -41,8 +41,6 @@ def update():
     # print(price)
     # print(pic_num)
 
-    if db.set_s_pay_RQ_code_url(account, '') == '':
-        return 'pay_RQ_code_url_False'
     ono = db.init_o_order(account, price)
     if ono == '':
         return 'init_order_error'
@@ -54,13 +52,20 @@ def update():
     for i in range(pic_num):
         par = 'file' + str(i)  # 得到对应的图片的参数名
         files.append(request.files.get(par))  # 根据参数名获得对应的图片文件
+    QR = request.files.get('QR')
     for i in range(pic_num):
         path = '{account}_{ono}_{pic_num}.jpg'.format(account=account, ono=ono, pic_num=i)
+        db.upload_pic(ono, path)
         path = os.path.join(PATH, path)
         files[i].save(path)  # 把图片文件存在本地的filepath路径下
-        # 注意这个filename应该每张图片对应一个自己的不同的文件名，根据后端需要而自行设定
-        db.upload_pic(ono, path)
-    sql.set_seller_unpayed_amount(ono)
+    QR_path = '{account}_{ono}_QR.jpg'.format(account=account, ono=ono)
+    db.set_s_pay_RQ_code_url(account, QR_path)
+    QR_path = os.path.join(PATH, QR_path)
+    QR.save(QR_path)
+
+    # 注意这个filename应该每张图片对应一个自己的不同的文件名，根据后端需要而自行设定
+
+
     return 'update_OK'
 
 
@@ -69,11 +74,14 @@ def agree():
     # num是车辆的编号
     global db
     o_ono = request.form.get('num')
+    lock_code = request.form.get('lock_code')
     # 下面对卖家提交的待审核车辆进行同意操作
-    print(o_ono)
+    # print(o_ono)
     if db.set_if_approved(o_ono, True) == '':
         return 'agree_False'
     else:
+        db.set_lock_code(o_ono, lock_code)
+        db.set_seller_unpayed_amount(ono)
         return o_ono
 
 
@@ -100,7 +108,7 @@ def search():
     dicts = []
     key = request.form.get('key')
     # 车辆类型有两种 山地车、普通车
-    if str.isdecimal(key):
+    if (len(key) == 8 and str.isdecimal(key)):
         # 返回买家的已经被后台确认收到款的车辆信息
         """因为这个函数不同，所以返回格式需要改动"""
         result = db.get_order_by_bno(key)
@@ -109,16 +117,16 @@ def search():
     elif key == 'admin':
         # 返回卖家提交的待审核的车辆信息
         result = db.get_order_new()
-    elif key == '山地车' or '普通车':
+    elif len(key) > 0:
         # 返回满足条件（（属性name）==key）的车辆信息
         result = db.get_order_unsold_by_tag(key)
-    else:
+    elif len(key) == 0:
         # 返回10条未卖出的车辆信息，最好设一个计数器，每次返回下一个10条信息
         result = db.get_order_unsold()
     for i in result:
         dicts.append({'no': i[0][0], 'name': i[2][0], 'age': i[2][1], 'money': i[0][3], 'pics':
-            ['http://{IP}:5555/get_file/data/{pic_addr}'.format(IP = IP, pic_addr = each) for each in i[1]]
-            })
+            ['http://{IP}:5555/get_file/data/{pic_addr}'.format(IP=IP, pic_addr=each) for each in i[1]]
+                      })
     # dist1是符合key类别的车辆的信息
     # dist1 = {车辆的编号(也就是订单的编号)，车辆的类别(name)属性，车辆的年龄(age)属性，车辆的价格，图片总数量，图片0链接，图片1链接，...}
     # return [dist1, dist2, ...]
@@ -127,7 +135,6 @@ def search():
     # dist2 = {'no': '2', 'name': '山地车', 'age': '3', 'money': 100,
     #          'pics': ['http://localhost:5555/get_file/data/1.jpg', 'http://localhost:5555/get_file/data/10.jpg']}
     return json.dumps(dicts)
-
 
 
 @app.route('/signup/', methods=['POST'])
@@ -175,10 +182,10 @@ def sold():
     account = request.form.get('account')
     ono = request.form.get('bike_num')
 
-    db.set_buyer_o_order(bike_num, account)
+    db.set_buyer_o_order(ono, account)
     db.set_buyer_payed_amount(ono)
     db.set_sold(ono)
-    return 'bike sold'
+    return '\nsold! lock_code: ' + db.get_lock_code(ono)
 
 
 @app.route('/confirm/', methods=['POST'])
@@ -188,6 +195,7 @@ def confirm():
     db.set_seller_payed_amount(bike_num)
 
     return 'confirm successfully'
+
 
 if __name__ == '__main__':
     basedir = os.path.abspath(os.path.dirname(__file__))
