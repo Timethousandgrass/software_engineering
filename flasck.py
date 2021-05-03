@@ -1,13 +1,17 @@
 from flask import Flask, request, render_template, send_file
 import os
+import os.path
 import json
 import SQL_file
 
 app = Flask(__name__)
+PATH = 'I:/bike_data/data/'
+IP = '118.202.40.213'
 
 # 需要初始化管理员
 
-'''@app.route('/get_file/data/<name>', methods=['GET'])  # <file_name>
+
+@app.route('/get_file/data/<name>', methods=['GET'])  # <file_name>
 def get_local_resource(name):  # file_name
     # print(request.args.get('name'))
     basedir = os.path.abspath(os.path.dirname(__file__))
@@ -16,7 +20,8 @@ def get_local_resource(name):  # file_name
     # basedir一般是在配置文件中
     file_path = os.path.join(basedir, 'data', name)
     print(file_path)
-    return send_file(file_path)'''
+    return send_file(os.path.join(PATH, name))
+
 
 
 @app.route('/update/', methods=['POST'])
@@ -28,55 +33,60 @@ def update():
     name = request.form.get('name')
     age = request.form.get('age')
     price = request.form.get('money')
-    filenum = request.form.get('filenum')
-    img0 = request.files.get('file0')
-    print(account)
-    print(name)
-    print(age)
-    print(price)
-    print(filenum)
-    if db.init_s_seller(account) == '': return 'account_False'
-    if db.set_s_pay_RQ_code_url(account, '') == '': return 'pay_RQ_code_url_False'
+    pic_num = request.form.get('filenum')
+
+    # print(account)
+    # print(name)
+    # print(age)
+    # print(price)
+    # print(pic_num)
+
+    if db.set_s_pay_RQ_code_url(account, '') == '':
+        return 'pay_RQ_code_url_False'
     ono = db.init_o_order(account, price)
-    filenum = int(filenum)  # filenum就是前端传来的图片个数
+    if ono == '':
+        return 'init_order_error'
+    pic_num = int(pic_num)  # filenum就是前端传来的图片个数
     files = []
-    paths = []
-    for i in range(filenum):
+
+    db.add_bike_tag(ono, name)
+    db.add_bike_tag(ono, age)
+    for i in range(pic_num):
         par = 'file' + str(i)  # 得到对应的图片的参数名
         files.append(request.files.get(par))  # 根据参数名获得对应的图片文件
-    for file in files:
-        file.save('data/')  # 把图片文件存在本地的filepath路径下
+    for i in range(pic_num):
+        path = '{account}_{ono}_{pic_num}.jpg'.format(account=account, ono=ono, pic_num=i)
+        path = os.path.join(PATH, path)
+        files[i].save(path)  # 把图片文件存在本地的filepath路径下
         # 注意这个filename应该每张图片对应一个自己的不同的文件名，根据后端需要而自行设定
-    for path in paths:
-        # path是图片在本地的地址
         db.upload_pic(ono, path)
-    img0.save('data/img0.jpg')
-    # db.insert(idd, name, age, 'data/%s.jpg' % idd)
-    # idd += 1
+    sql.set_seller_unpayed_amount(ono)
     return 'update_OK'
 
 
-"""@app.route('/agree/', methods=['POST'])
+@app.route('/agree/', methods=['POST'])
 def agree():
     # num是车辆的编号
     global db
     o_ono = request.form.get('num')
     # 下面对卖家提交的待审核车辆进行同意操作
-    if db.set_if_approved(o_ono, 1) == '':
+    print(o_ono)
+    if db.set_if_approved(o_ono, True) == '':
         return 'agree_False'
     else:
-        return o_ono"""
+        return o_ono
 
-"""@app.route('/del/', methods=['POST'])
+
+@app.route('/del/', methods=['POST'])
 def dele():
     # num是车辆的编号
     global db
     o_ono = request.form.get('num')
     # 下面对卖家提交的待审核车辆进行删除操作
-    if db.delete_o_order(o_ono) == '':
+    if db.set_if_approved(o_ono, False) == '':
         return 'dele_False'
     else:
-        return o_ono"""
+        return o_ono
 
 
 @app.route('/search/', methods=['POST'])
@@ -96,7 +106,7 @@ def search():
         result = db.get_order_by_bno(key)
         for i in result:
             dicts.append({'no': i[0][0], 'name': i[2][0], 'age': i[2][1], 'money': i[0][5], 'pics': i[1]})
-    elif key == 'admin0':
+    elif key == 'admin':
         # 返回卖家提交的待审核的车辆信息
         result = db.get_order_new()
     elif key == '山地车' or '普通车':
@@ -106,7 +116,9 @@ def search():
         # 返回10条未卖出的车辆信息，最好设一个计数器，每次返回下一个10条信息
         result = db.get_order_unsold()
     for i in result:
-        dicts.append({'no': i[0][0], 'name': i[2][0], 'age': i[2][1], 'money': i[0][3], 'pics': i[1]})
+        dicts.append({'no': i[0][0], 'name': i[2][0], 'age': i[2][1], 'money': i[0][3], 'pics':
+            ['http://{IP}:5555/get_file/data/{pic_addr}'.format(IP = IP, pic_addr = each) for each in i[1]]
+            })
     # dist1是符合key类别的车辆的信息
     # dist1 = {车辆的编号(也就是订单的编号)，车辆的类别(name)属性，车辆的年龄(age)属性，车辆的价格，图片总数量，图片0链接，图片1链接，...}
     # return [dist1, dist2, ...]
@@ -117,21 +129,24 @@ def search():
     return json.dumps(dicts)
 
 
-"""@app.route('/signup/', methods=['POST'])
+
+@app.route('/signup/', methods=['POST'])
 def signup():
     global db
     account = request.form.get('account')
     name = request.form.get('name')
     password = request.form.get('password')
-    phone = request.form.get('phone')
+    phone = request.form.get('phone_num')
     if account == '' or name == '' or password == '' or phone == '':
         return '不能为空'
-    if db.sign_up(account, name, password, phone) == '':
+    if db.sign_up(account, name, password, phone) == '' \
+            or db.init_s_seller(account) == '' or db.init_b_buyer(account) == '':
         return 'sign_up_False'
     else:
-        return 'sign_up_True'"""
+        return 'sign_up_True'
 
-'''@app.route('/login/', methods=['POST'])
+
+@app.route('/login/', methods=['POST'])
 def login():
     global db
     account = request.form.get('account')
@@ -144,12 +159,29 @@ def login():
         else:
             return {'right': '1', 'admin': '0'}
     else:
-        return {'right': '0', 'admin': '0'}'''
+        return {'right': '0', 'admin': '0'}
 
-'''@app.route('/money/', methods=['GET'])
+
+@app.route('/money/', methods=['GET'])
 def money():
     """返回平台收款码"""
-    return send_file('data/OIP.jpg')'''
+    return send_file('data/OIP.jpg')
+
+
+@app.route('/sold/', methods=['POST'])
+def sold():
+    """过程不确定"""
+    global db
+    account = request.form.get('account')
+    bike_num = request.form.get('bike_num')
+    # eg. confirm('20180001','123')
+    # 证明买家（账号是20180001) 为车辆编号是123的车付了款，后台人员支付宝收到信息后，根据支付宝上备注的买家账号account与车辆编号bike_num来更新数据库的车辆表的
+    db.set_buyer_o_order(bike_num, account)
+    db.set_buyer_payed_amount(bike_num)
+
+    db.set_seller_payed_amount(bike_num)
+    db.set_sold(bike_num)
+    return 'confirm successfully'
 
 
 @app.route('/confirm/', methods=['POST'])
@@ -158,14 +190,14 @@ def confirm():
     global db
     account = request.form.get('account')
     bike_num = request.form.get('bike_num')
-    # eg confirm('20180001','123')
+    # eg. confirm('20180001','123')
     # 证明买家（账号是20180001) 为车辆编号是123的车付了款，后台人员支付宝收到信息后，根据支付宝上备注的买家账号account与车辆编号bike_num来更新数据库的车辆表的
     db.set_buyer_o_order(bike_num, account)
     db.set_buyer_payed_amount(bike_num)
+
     db.set_seller_payed_amount(bike_num)
     db.set_sold(bike_num)
     return 'confirm successfully'
-
 
 if __name__ == '__main__':
     basedir = os.path.abspath(os.path.dirname(__file__))
