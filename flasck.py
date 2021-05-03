@@ -173,30 +173,20 @@ def sold():
     """过程不确定"""
     global db
     account = request.form.get('account')
-    bike_num = request.form.get('bike_num')
-    # eg. confirm('20180001','123')
-    # 证明买家（账号是20180001) 为车辆编号是123的车付了款，后台人员支付宝收到信息后，根据支付宝上备注的买家账号account与车辆编号bike_num来更新数据库的车辆表的
-    db.set_buyer_o_order(bike_num, account)
-    db.set_buyer_payed_amount(bike_num)
+    ono = request.form.get('bike_num')
 
-    db.set_seller_payed_amount(bike_num)
-    db.set_sold(bike_num)
-    return 'confirm successfully'
+    db.set_buyer_o_order(bike_num, account)
+    db.set_buyer_payed_amount(ono)
+    db.set_sold(ono)
+    return 'bike sold'
 
 
 @app.route('/confirm/', methods=['POST'])
 def confirm():
-    """过程不确定"""
     global db
-    account = request.form.get('account')
     bike_num = request.form.get('bike_num')
-    # eg. confirm('20180001','123')
-    # 证明买家（账号是20180001) 为车辆编号是123的车付了款，后台人员支付宝收到信息后，根据支付宝上备注的买家账号account与车辆编号bike_num来更新数据库的车辆表的
-    db.set_buyer_o_order(bike_num, account)
-    db.set_buyer_payed_amount(bike_num)
-
     db.set_seller_payed_amount(bike_num)
-    db.set_sold(bike_num)
+
     return 'confirm successfully'
 
 if __name__ == '__main__':
