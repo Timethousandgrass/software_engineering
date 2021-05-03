@@ -407,8 +407,10 @@ class SQL():
         o_ono = str(o_ono)
         try:
             self.pgsql_cursor.execute("""
-            update o_order set o_if_sold = true where o_ono = '{o_ono}';
-            update o_order set o_sold_date = '{o_sold_date}' where o_ono = '{o_ono}';
+            update o_order set o_if_sold = true where 
+            o_if_sold = false and o_if_confirmed = true and o_ono = '{o_ono}';
+            update o_order set o_sold_date = '{o_sold_date}' where
+            o_if_sold = false and o_if_confirmed = true and o_ono = '{o_ono}';
             """.format(o_ono=o_ono, o_sold_date=time.strftime('%Y-%m-%d %H:%M:%S')))
             self.PostgreSQLConnection.commit()
         except:
