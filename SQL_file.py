@@ -1,12 +1,13 @@
 import psycopg2
 import time
+import datetime
 
 
 class SQL():
     O_ONO = 1
     
     def __init__(self):
-        self.PostgreSQLConnection  =  psycopg2.connect(database="bike", user="postgres",password="252012", host="localhost", port="5432")
+        self.PostgreSQLConnection  =  psycopg2.connect(database="bike1", user="postgres",password="252012", host="localhost", port="5432")
         self.pgsql_cursor = self.PostgreSQLConnection.cursor()
         
         
@@ -477,7 +478,20 @@ class SQL():
             delete from o_order;
             delete from s_seller;
             delete from b_buyer;
+            delete from a_admin;
             delete from u_user;
+            commit;
+            """)
+            self.PostgreSQLConnection.commit()
+            SQL.O_ONO = 1
+        except KeyError:
+            self.pgsql_cursor.execute("abort")
+            return ''
+    
+    def clear_admin(self):
+        try:
+            self.pgsql_cursor.execute("""
+            delete from a_admin;
             commit;
             """)
             self.PostgreSQLConnection.commit()
@@ -500,7 +514,7 @@ class SQL():
         return [(orders[i], self.get_pic(orders[i][0]), self.get_bike_tag(orders[i][0])) for i in range(len(orders))]
     
     
-    def get_new_order(self):
+    def get_order_new(self):
         """返回未被审核过的订单,及其相关信息"""
         try:
             self.pgsql_cursor.execute("""
@@ -567,4 +581,95 @@ class SQL():
             self.PostgreSQLConnection.commit()
         except :
             self.pgsql_cursor.execute("abort")
-            return '' 
+            return ''
+    
+    
+    def init_admin(self, u_uno, u_uname, u_password, u_phone_num, a_salary):
+        """初始化管理员，插入一个管理员的信息，可插入多个"""
+        u_uno = str(u_uno)
+        u_uname = str(u_uname)
+        u_password = str(u_password)
+        u_phone_num = str(u_phone_num)
+        a_salary = float(a_salary)
+        
+        self.sign_up(u_uno, u_uname, u_password, u_phone_num)
+        try:
+            self.pgsql_cursor.execute("""
+            insert into a_admin(a_ano, a_salary) values('{a_ano}', {a_salary});
+                                      """.format(a_ano = u_uno, a_salary = a_salary))
+            self.PostgreSQLConnection.commit()
+        except :
+            self.pgsql_cursor.execute("abort")
+            return ''
+    
+    
+    def get_if_admin(self, u_uno):
+        """获得用户号u_uno是否为管理员，是的话返回True"""
+        u_uno = str(u_uno)
+        try:
+            self.pgsql_cursor.execute("""
+            select a_ano from a_admin;
+            """)
+            admin_list = self.pgsql_cursor.fetchall()
+            
+            return u_uno in [each[0] for each in admin_list]
+        except :
+            self.pgsql_cursor.execute("abort")
+            return ''
+    
+
+    def get_order_unsold_by_tag(self, bt_tag):
+        """根据输入tag输出所有未卖出订单中符合tag条件的订单信息"""
+        bt_tag = str(bt_tag)
+        try:
+            self.pgsql_cursor.execute("""
+            select bt_ono from bt_bike_tag where bt_tag = '{bt_tag}';
+            """.format(bt_tag = bt_tag))
+            order_list = self.pgsql_cursor.fetchall()
+            order_list = [each[0] for each in order_list]
+        except :
+            self.pgsql_cursor.execute("abort")
+            return ''
+        order_detail = list()
+        for each_order in order_list:
+            try:
+                self.pgsql_cursor.execute("""
+                select o_ono, o_sno, o_up_date, o_price from o_order where o_if_sold = false and o_ono =  '{o_ono}';
+                """.format(o_ono = each_order))
+                order_detail.append(self.pgsql_cursor.fetchall()[0])
+            except:
+                self.pgsql_cursor.execute("abort")
+                return ''
+        #return order_detail
+        return [(order_detail[i], self.get_pic(order_detail[i][0]), self.get_bike_tag(order_detail[i][0])) for i in range(len(order_detail))]
+        
+
+    def get_order_unsold_by_sno(self, o_sno):
+        """根据输入tag输出所有未卖出订单中符合tag条件的订单信息"""
+        o_sno = str(o_sno)
+        try:
+            self.pgsql_cursor.execute("""
+            select o_ono, o_sno, o_up_date, o_price from o_order where o_sno =  '{o_sno}';
+            """.format(o_sno = o_sno))
+            order_detail = self.pgsql_cursor.fetchall()
+        except:
+            self.pgsql_cursor.execute("abort")
+            return ''
+        # return order_detail
+        return [(order_detail[i], self.get_pic(order_detail[i][0]), self.get_bike_tag(order_detail[i][0])) for i in range(len(order_detail))]
+    
+    
+    def get_order_by_bno(self, o_bno):
+        """根据输入tag输出所有未卖出订单中符合tag条件的订单信息"""
+        o_bno = str(o_bno)
+        try:
+            self.pgsql_cursor.execute("""
+            select o_ono, o_sno, o_bno, o_up_date, o_sold_date, o_price, o_seller_paid, o_if_confirmed, o_confirmed_date
+            from o_order where o_bno =  '{o_bno}';
+            """.format(o_bno = o_bno))
+            order_detail = self.pgsql_cursor.fetchall()
+        except:
+            self.pgsql_cursor.execute("abort")
+            return ''
+        #return order_detail
+        return [order_detail[0], self.get_pic(order_detail[0][0]), self.get_bike_tag(order_detail[0][0])]
