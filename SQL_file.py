@@ -660,11 +660,12 @@ class SQL():
     
     
     def get_order_by_bno(self, o_bno):
-        """根据输入tag输出所有未卖出订单中符合tag条件的订单信息"""
+        """根据输入tag输出所有未卖出订单中符合tag条件的订单信息
+        订单号、卖家号、买家号、上架日期、出售日期、价格、卖家所得、买家付款额、订单是否已确认、订单确认日期"""
         o_bno = str(o_bno)
         try:
             self.pgsql_cursor.execute("""
-            select o_ono, o_sno, o_bno, o_up_date, o_sold_date, o_price, o_seller_paid, o_if_confirmed, o_confirmed_date
+            select o_ono, o_sno, o_bno, o_up_date, o_sold_date, o_price, o_seller_paid, o_buyer_paid, o_if_confirmed, o_confirmed_date
             from o_order where o_bno =  '{o_bno}';
             """.format(o_bno = o_bno))
             order_detail = self.pgsql_cursor.fetchall()
