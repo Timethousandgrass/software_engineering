@@ -81,7 +81,7 @@ def agree():
         return 'agree_False'
     else:
         db.set_lock_code(o_ono, lock_code)
-        db.set_seller_unpayed_amount(ono)
+        db.set_seller_unpayed_amount(o_ono)
         return o_ono
 
 
@@ -112,8 +112,6 @@ def search():
         # 返回买家的已经被后台确认收到款的车辆信息
         """因为这个函数不同，所以返回格式需要改动"""
         result = db.get_order_by_bno(key)
-        for i in result:
-            dicts.append({'no': i[0][0], 'name': i[2][0], 'age': i[2][1], 'money': i[0][5], 'pics': i[1]})
     elif key == 'admin':
         # 返回卖家提交的待审核的车辆信息
         result = db.get_order_new()
@@ -196,6 +194,28 @@ def confirm():
 
     return 'confirm successfully'
 
+
+@app.route('/reload/', methods=['POST'])
+def reload():  # 买家确认收到货，自动取消7天退货权
+    global db
+    # 建立买家账号与车辆的联系，同时设置对应的日期(datetime), 表示买家在某日期买了这辆车
+    bike_num = request.form.get('bike_num')
+    if db.set_put_on(bike_num) == '':
+        return 'refund get bike error'
+    else:
+        return 'refund get bike successfully'
+    # eg confirm('20180001','123')
+    # 证明买家（账号是20180001) 为车辆编号是123的车付了款，后台人员支付宝收到信息后，根据支付宝上备注的买家账号account与车辆编号bike_num来更新数据库的车辆表的
+
+
+@app.route('/getQR/', methods=['POST'])
+def getQR():
+    # num是车辆的编号
+    global db
+    bike_num = request.form.get('bike_num')
+    QR_path = db.get_s_pay_RQ_code_url(db.get_seller_num(bike_num))
+    # 下面对卖家提交的待审核车辆进行同意操作
+    return 'http://{IP}:5555/get_file/data/{pic_addr}'.format(IP=IP, pic_addr=QR_path)
 
 if __name__ == '__main__':
     basedir = os.path.abspath(os.path.dirname(__file__))
