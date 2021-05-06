@@ -617,7 +617,8 @@ class SQL():
                 self.pgsql_cursor.execute("abort")
                 return ''
         # return order_detail
-        return [(order_detail[i], self.get_pic(order_detail[i][0]), self.get_bike_tag(order_detail[i][0])) for i in range(len(order_detail))]
+        return [(order_detail[i], self.get_pic(order_detail[i][0]), self.get_bike_tag(order_detail[i][0])) for i in 
+                range(len(order_detail))]
 
     def get_order_unsold_by_sno(self, o_sno):
         """根据输入tag输出所有未卖出订单中符合tag条件的订单信息"""
@@ -640,13 +641,12 @@ class SQL():
         o_bno = str(o_bno)
         try:
             self.pgsql_cursor.execute("""
-            select o_ono, o_sno, o_bno, o_up_date, o_sold_date, 
-            o_price, o_seller_paid, o_buyer_paid, o_if_confirmed, o_confirmed_date
-            from o_order where o_if_approved = true and o_bno =  '{o_bno}';
+            select o_ono, o_bno, o_up_date, o_buyer_paid from o_order where o_if_approved = true and o_bno =  '{o_bno}';
             """.format(o_bno=o_bno))
             order_detail = self.pgsql_cursor.fetchall()
         except:
             self.pgsql_cursor.execute("abort")
             return ''
         # return order_detail
-        return [order_detail[0], self.get_pic(order_detail[0][0]), self.get_bike_tag(order_detail[0][0])]
+        return [(order_detail[i], self.get_pic(order_detail[i][0]), self.get_bike_tag(order_detail[i][0])) for i in
+                range(len(order_detail))]
