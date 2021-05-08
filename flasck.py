@@ -16,11 +16,11 @@ IP = '118.202.40.213'
 def get_local_resource(name):  # file_name
     # print(request.args.get('name'))
     basedir = os.path.abspath(os.path.dirname(__file__))
-    print(basedir)
-    print(name)
+    # print(basedir)
+    # (name)
     # basedir一般是在配置文件中
     file_path = os.path.join(basedir, 'data', name)
-    print(file_path)
+    # print(file_path)
     return send_file(os.path.join(PATH, name))
 
 
@@ -190,9 +190,11 @@ def sold():
 def confirm():
     global db
     bike_num = request.form.get('bike_num')
-    db.set_seller_payed_amount(bike_num)
-
-    return 'confirm successfully'
+    # print('bike_num'+bike_num)
+    if db.set_seller_payed_amount(bike_num) == '':
+        return  'confirm error'
+    else:
+        return 'confirm successfully'
 
 
 @app.route('/reload/', methods=['POST'])
@@ -219,6 +221,6 @@ def getQR():
 
 if __name__ == '__main__':
     basedir = os.path.abspath(os.path.dirname(__file__))
-    print(basedir)
+    # print(basedir)
     db = SQL_file.SQL()
     app.run(host='0.0.0.0', port=5555)  # ,debug=True
