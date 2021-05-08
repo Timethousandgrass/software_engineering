@@ -2,7 +2,6 @@ import psycopg2
 import time
 import datetime
 
-
 class SQL():
     O_ONO = 1
 
@@ -129,7 +128,7 @@ class SQL():
             return ''
 
     def set_seller_unpayed_amount(self, o_ono):
-        """输入订单号, 修改s_seller表的卖家收款数, 
+        """输入订单号, 修改s_seller表的卖家收款数,
         既然卖家将车辆托管到平台, 平台就应该欠卖家一个自行车的钱数"""
         o_ono = str(o_ono)
         try:
@@ -617,7 +616,7 @@ class SQL():
                 self.pgsql_cursor.execute("abort")
                 return ''
         # return order_detail
-        return [(order_detail[i], self.get_pic(order_detail[i][0]), self.get_bike_tag(order_detail[i][0])) for i in 
+        return [(order_detail[i], self.get_pic(order_detail[i][0]), self.get_bike_tag(order_detail[i][0])) for i in
                 range(len(order_detail))]
 
     def get_order_unsold_by_sno(self, o_sno):
@@ -641,7 +640,8 @@ class SQL():
         o_bno = str(o_bno)
         try:
             self.pgsql_cursor.execute("""
-            select o_ono, o_bno, o_up_date, o_buyer_paid from o_order where o_if_approved = true and o_bno =  '{o_bno}';
+            select o_ono, o_bno, o_up_date, o_buyer_paid from o_order where
+            o_if_approved = true and o_if_confirmed = false and o_bno =  '{o_bno}';
             """.format(o_bno=o_bno))
             order_detail = self.pgsql_cursor.fetchall()
         except:
