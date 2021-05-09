@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div>
     <input type="text" name='lock_code' value="" v-model="no" placeholder="请输入车辆编号">
     <button @click="submit()">重新上架</button>
@@ -33,6 +34,14 @@ name: "reload",
       });
     }
   }
+=======
+$END$
+</template>
+
+<script>
+export default {
+name: "reload"
+>>>>>>> 9d7ade600bccee4d3212d7d0f1106f99bf4a86d7
 }
 </script>
 

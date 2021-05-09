@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div>
     <input type="text" name='lock_code' value="" v-model="no" placeholder="请输入车辆编号">
     <button @click="submit()">查询</button>
@@ -34,6 +35,14 @@ export default {
     }
   }
 
+=======
+$END$
+</template>
+
+<script>
+export default {
+name: "getQR"
+>>>>>>> 9d7ade600bccee4d3212d7d0f1106f99bf4a86d7
 }
 </script>
 
