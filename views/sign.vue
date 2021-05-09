@@ -4,6 +4,7 @@
     <form id="FF">
       <input type="text" name='Account' value="20180000" v-model="account" placeholder="请输入学号">
       <input type="text" name='password' value="" v-model="password" placeholder="请输入密码">
+      <input type="text" name='name' value="" v-model="name" placeholder="请输入用户名">
       <input type="text" name='phone_num' value="" v-model="phone_num" placeholder="请输入联系方式">
       <button @click="submit($event)">注册</button>
     </form>
@@ -23,6 +24,7 @@ export default {
       account:'',
       password:'',
       mess:'',
+      name:'',
       phone_num:''
 
     }
@@ -35,9 +37,11 @@ export default {
       const form = document.querySelector("#FF");
       const formData = new FormData();
       // 向 formData 对象中添加文件
+
       formData.append('account', this.account)
       formData.append('password', this.password)
       formData.append('phone_num', this.phone_num)
+      formData.append('name', this.name)
       console.log(formData.get('account'))
       const config = {
         headers: {
@@ -47,7 +51,7 @@ export default {
       axis.post('/signup/', formData, config).then(res=>{
         console.log("res: ", res);
         this.mess=res.data
-        if (this.mess==="True") {
+        if (this.mess==="sign_up_True") {
           console.log('here');
           this.$router.push('/load')
         }else{

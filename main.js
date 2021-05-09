@@ -69,6 +69,14 @@ const routes=[
         path:'/confirm_paid',
         component:(resolve)=>require(['./views/confirm_paid.vue'],resolve)
     },
+    {
+        path:'/getQR',
+        component:(resolve)=>require(['./views/getQR.vue'],resolve)
+    },
+    {
+        path:'/reload',
+        component:(resolve)=>require(['./views/reload.vue'],resolve)
+    },
 ];
 
 

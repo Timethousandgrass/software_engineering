@@ -1,11 +1,22 @@
 <template>
   <!--文件上传表单-->
   <form id="FF">
-    <input type="text" name='name' value="fehuw" v-model="name" placeholder="请输入名字">
-    <input type="text" name='age' value="ifwef" v-model="age" placeholder="请输入年龄">
-    <input type="file" multiple @change="getFile($event)">
-    <p v-for="i in filename">{{i}}</p>
-<!--    <input type="file" @change="getFile2($event)">-->
+    <input type="text" name='name' value="fehuw" v-model="name" placeholder="请输入车辆类型">
+    <input type="text" name='age' value="ifwef" v-model="age" placeholder="请输入车龄">
+    <input type="text" name='money' value="ifwef" v-model="money" placeholder="请输入价格">
+
+      <p>上传收款二维码</p>
+      <input type="file"  name='上传收款二维码' value='上传收款二维码' @change="getQR($event)">
+
+
+
+      <h>上传车辆照片</h>
+      <input type="file" multiple @change="getFile($event)">
+
+    <div v-for="i in filename">
+      <p>{{i}}</p>
+    </div>
+
     <button @click="submit($event)">提交</button>
     <p>{{mess}}</p>
   </form>
@@ -22,7 +33,9 @@ export default {
       //文件
       name:'',
       age:'',
+      money:'',
       filenum:0,
+      QR:[],
       file: [],
       filename:[],
       mess:''
@@ -39,9 +52,11 @@ export default {
         this.file.push(event.target.files[i])  ;
         this.filename.push(event.target.files[i].name)
       }
-
       console.log(this.filenum);
       console.log(this.file);
+    },
+    getQR(event){
+      this.QR[0]=event.target.files[0]
     },
     submit(event) {
       event.preventDefault();//取消默认行为
@@ -53,10 +68,12 @@ export default {
       formData.append('account',window.localStorage.getItem('account'))
       formData.append('name',this.name)
       formData.append('age',this.age)
+      formData.append('money',this.money)
       formData.append('filenum',this.filenum)
       for(let i=0; i< this.filenum;i++){
         formData.append('file'+i,this.file[i]);
       }
+      formData.append('QR',this.QR[0]);
 
       // console.log(this.name)
       console.log(formData)

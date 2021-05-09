@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c3aa2537-5393-47ca-8f6a-95a577269aa4" name="Default Changelist" comment="" />
+    <list default="true" id="c3aa2537-5393-47ca-8f6a-95a577269aa4" name="Default Changelist" comment="Initial commit">
+      <change beforePath="$PROJECT_DIR$/.idea/Paggie.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Paggie.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/admin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/views/admin.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/buy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/views/buy.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/confirm_paid.vue" beforeDir="false" afterPath="$PROJECT_DIR$/views/confirm_paid.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/getQR.vue" beforeDir="false" afterPath="$PROJECT_DIR$/views/getQR.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/mine.vue" beforeDir="false" afterPath="$PROJECT_DIR$/views/mine.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/reload.vue" beforeDir="false" afterPath="$PROJECT_DIR$/views/reload.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/views/search.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/sign.vue" beforeDir="false" afterPath="$PROJECT_DIR$/views/sign.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/submit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/views/submit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webpack.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/webpack.config.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,7 +32,13 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1q0EvJilQgNEmXDOvi78mBYOciW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -27,6 +48,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -37,6 +59,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="web-ide.project.structure" />
     <property name="ts.external.directory.path" value="D:\software\WebStorm 2020.3.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -53,6 +76,9 @@
     </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\time\AppData\Roaming\Subversion</configuration>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="c3aa2537-5393-47ca-8f6a-95a577269aa4" name="Default Changelist" comment="" />
@@ -66,11 +92,34 @@
       <workItem from="1616487400687" duration="11015000" />
       <workItem from="1618757328215" duration="7134000" />
       <workItem from="1619359914092" duration="63750000" />
-      <workItem from="1619937348966" duration="3550000" />
+      <workItem from="1619937348966" duration="4738000" />
+      <workItem from="1620012714811" duration="20469000" />
+      <workItem from="1620207993585" duration="760000" />
+      <workItem from="1620225154289" duration="567000" />
+      <workItem from="1620298971115" duration="4027000" />
+      <workItem from="1620384105247" duration="4693000" />
+      <workItem from="1620476106069" duration="184000" />
+      <workItem from="1620528343508" duration="2756000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
   </component>
 </project>

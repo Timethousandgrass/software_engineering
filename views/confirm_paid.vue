@@ -33,7 +33,7 @@ export default {
           'Content-Type': 'multipart/form-data'
         }
       }
-      axis.post('/confirm/', formData, config).then(res=>{
+      axis.post('/sold/', formData, config).then(res=>{
         this.mess=res.data;
       });
     }

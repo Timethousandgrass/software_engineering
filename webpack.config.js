@@ -1,6 +1,6 @@
 var path = require('path');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var IP='172.18.6.189:5555'
+var IP='localhost:5555'
 var config = {
     entry: {
         main: './main'
@@ -121,7 +121,28 @@ var config = {
                 changeOrigin: true,
                 pathRewrite: {
                     '^/confirm': ''
-            }}
+            }},
+            '/sold':{
+                target: 'http://'+IP+'/sold',
+// 代理跨域目标接口
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/sold': ''
+            }},
+            '/getQR':{
+                target: 'http://'+IP+'/getQR',
+// 代理跨域目标接口
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/getQR': ''
+            }},
+            '/reload':{
+                target: 'http://'+IP+'/reload',
+// 代理跨域目标接口
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/reload': ''
+                }},
         }
 
     }

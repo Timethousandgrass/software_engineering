@@ -5,7 +5,7 @@
     <div>请注意保存您的支付记录</div>
     <div>后续客服收到款后，会根据备注的账号进行订单生成，同时会联系您进行发货</div>
     <div>您可以后续查询您的已经被后台生成的订单，订单生成可能有延迟，请您耐心等候</div>
-    <img :src="'http://localhost:5555/get_file/data/OIP.jpg'" style="width: 200px;">
+    <img :src="'http://118.202.40.213:5555/get_file/data/QR.jpg'" style="width: 200px;">
   </div>
 
 </template>

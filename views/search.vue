@@ -4,7 +4,7 @@
     <a @click="GotoMine()">我的订单</a>
     <a @click="GotoLoad()">重新登陆</a>
     <div>
-      <input type="text" name='key' value="what" v-model="what" placeholder="请输入名字">
+      <input type="text" name='key' value="" v-model="what" placeholder="请输入名字">
       <button @click="submit($event)">查询</button>
     </div>
     <div v-for="item in li">
@@ -27,7 +27,6 @@ export default {
       what:'山地车',
 
       li:[]
-
     }
   },
   methods:{
@@ -44,7 +43,7 @@ export default {
     submit(event) {
       event.preventDefault();//取消默认行为
       //创建 formData 对象
-
+      this.li=[]
       const form=document.querySelector("#FF");
       const formData = new FormData();
       // 向 formData 对象中添加文件
